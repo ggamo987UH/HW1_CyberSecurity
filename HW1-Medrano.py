@@ -1,8 +1,30 @@
 import re
-import random
+def mapping(characters_frequencies, most_common_letters_in_the_alphabet):
+    characters_frequencies = dict(sorted(characters_frequencies.items(), key=lambda item: item[1], reverse=True))
+    stack = list(most_common_letters_in_the_alphabet.keys())
+    for char in characters_frequencies:
+        if len(stack) == 0:
+            break
+        most_common_letters_in_the_alphabet[stack.pop(0)] = char
+
+    most_common_letters_in_the_alphabet = {v:k for k, v in most_common_letters_in_the_alphabet.items()}
+
+    return most_common_letters_in_the_alphabet
+
+def summarize():
+    print('\n\nSummary:')
+    print('''
+          First I created a Dictionary that holds the most common letters to the least common letters in the alphabet.Originally in the homework, 
+          there was a table that showed the same dictionary but the value for each character had a decimal distribution.Instead in 
+          most_common_letters_in_the_alphabet, each character is assigned a space because we want to fill it up with the frequency of the characters
+          in the text.That is why a new characters_frequencies gets made that keeps track of the frequency of the letter. Afterward, we sort the 
+          characters_frequencies by the value and start matching it with the most_common_letters_in_the_alphabet dictionary, by replacing the space. 
+          Afterward, every character from the text gets replaced by searching the most_common_letters_in_the_alphabet and replacing it with the value 
+          and this decodes the message.''')
+
 def problem1():
     cipher_text = "ROYQWH KQXXJYQ: N LQGNQAQ HDJH FO. VW NX J KQKLQO VZ J XQMOQH MONKQ VOYJWNSJHNVW MJGGQF U.D.J.W.H.V.K., IDVXQ YVJG NX HVHJG IVOGF FVKNWJHNVW. HDQNO UGJW NX HV JMBRNOQ J XRUQOIQJUVW JWF HV DVGF HDQ IVOGF OJWXVK. N JK JZOJNF HDJH IQ FV WVH DJAQ KRMD HNKQ LQZVOQ HDQT XRMMQQF.\nN DJAQ OQMQWHGT NWHQOMQUHQF JW QWMOTUHQF KQXXJYQ (JHHJMDKQWH MNUDQO2.HCH) HDJH IJX XQWH LT FO. VW HV VWQ VZ DNX MVWXUNOJHVOX, HDQ NWZJKVRX KO. LGVIZNQGF. N KJWJYQF HV FNXMVAQO HDJH HDQ KQXXJYQ IJX QWMOTUHQF RXNWY HDQ PJMEJG MNUDQO (XQQ XVROMQ MVFQ), LRH N IJX WVH JLGQ FNXMVAQO HDQ XQMOQH EQT, JWF HDQ MNUDQO XQQKX HV LQ RWLOQJEJLGQ. N JK JZOJNF HDJH FQMOTUHNWY HDNX KQXXJYQ NX HDQ VWGT IJT HV XHVU FO. VW'X VOYJWNSJHNVW.\nUGQJXQ XQWF OQNWZVOMQKQWHX NKKQFNJHQGT! N HONQF HV JMH MJRHNVRXGT, LRH N DJAQ J ZQQGNWY HDJH FO. VW'X DQWMDKQW JOQ VWHV KQ. N FVW'H EWVI DVI GVWY N DJAQ LQZVOQ HDQT FNXMVAQO KT OQJG NFQWHNHT JWF KT XQMOQH DNFNWY UGJ"
-    probabilities = {
+    most_common_letters_in_the_alphabet = {
         'E': '',
         'T': '',
         'A': '',
@@ -31,25 +53,23 @@ def problem1():
         'X': ''
     }
 
-    freq = {}
+    characters_frequencies = {}
     for char in cipher_text:
         if not char.isalpha():
             continue
-        freq[char] = freq.get(char, 0) + 1
+        characters_frequencies[char] = characters_frequencies.get(char, 0) + 1
 
-    freq = dict(sorted(freq.items(), key=lambda item: item[1], reverse=True))
-    stack = list(probabilities.keys())
-    for char in freq:
-        if len(stack) == 0:
-            break
-        probabilities[stack.pop(0)] = char
-
-    probabilities = {v:k for k, v in probabilities.items()}
-
+    print(f"Frequency Table:")
+    for char, frequency in characters_frequencies.items():
+        print(f"{char}: {frequency}")
+    
+    most_common_letters_in_the_alphabet = mapping(characters_frequencies,most_common_letters_in_the_alphabet)
+    
     for char in range(len(cipher_text)):
-        if cipher_text[char] in probabilities:
-            cipher_text = cipher_text[:char] + probabilities[cipher_text[char]] + cipher_text[char+1:]
-    print(cipher_text)
+        if cipher_text[char] in most_common_letters_in_the_alphabet:
+            cipher_text = cipher_text[:char] + most_common_letters_in_the_alphabet[cipher_text[char]] + cipher_text[char+1:]
+    print(f"\nDecoded Ciphertext:\n {cipher_text}")
+    summarize()
 
 
 def JACKAL_Decrypt(firstKeyByte, secondKeyByte, cipherText):
@@ -96,7 +116,6 @@ def problem3():
     plain_text = bytearray()
     for i in range(len(cipher_text)):
         plain_text.append(cipher_text[i] ^ key_phrase[i % 11])
-
 
     print(plain_text.decode('utf-8'))
 
