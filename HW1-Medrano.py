@@ -35,10 +35,7 @@ def problem1():
     for char in cipher_text:
         if not char.isalpha():
             continue
-        if char in freq:
-            freq[char] += 1 
-        else:
-            freq[char] = 1
+        freq[char] = freq.get(char, 0) + 1
 
     freq = dict(sorted(freq.items(), key=lambda item: item[1], reverse=True))
     stack = list(probabilities.keys())
